@@ -1,23 +1,19 @@
 let inn = false;
 let ed = false;
-let insert = ()=>{
-    ed = false;
-    inn = true;
-}
-let edit = ()=>{
-    ed = true;
-    inn = false;
-}
 $(document).ready(()=>{
     $(`#form1`).hide();
     $(`#but1`).click(function(){
-    $(`#form1`).toggle(1000);
-    });
+    ed = false;
+    inn = true;
+    $(`#form1`).toggle(1000);});
 });
+
 $(document).ready(()=>{
     $(`#form1`).hide();
     $(`#but2`).click(function(){
-        $(`#form1`).toggle(1000);    
+        inn = false;
+	ed = true;
+	$(`#form1`).toggle(1000);    
     });
 });
 
@@ -43,9 +39,8 @@ let submitForm = ()=>{
         if(inn == true)
 	{
 		tabb.append(`<tr><td>${n}</td><td>${r}</td><td>${s}</td><td>${y}</td><td><input type = 'checkbox' name='cBox'></td></tr>`);
-		inn = false;
 	}
-	else
+	if(ed == true)
 	{
 		let ar = document.getElementsByTagName(`tr`);
 		for(let i in ar)
@@ -77,7 +72,6 @@ let checkAll = (cb)=> {
         $("input[name='cBox']").prop("checked", false);
     }
 }
-
 
 			
 	
