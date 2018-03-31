@@ -1,78 +1,118 @@
-let inn = false;
-let ed = false;
-$(document).ready(()=>{
-    $(`#form1`).hide();
-    $(`#but1`).click(function(){
-    ed = false;
-    inn = true;
-    $(`#form1`).toggle(1000);});
-});
+let insertFlag = false;
+let editFlag = false;
+let count = 3;
+let toggleFlag = 0;
+$(document).ready(() => {
+    $(`#form`).hide();
+    $(`#but2`).click(function () {
+        document.getElementById(`form`).reset();
+        if (toggleFlag == 0) {
+            $(`#form`).toggle(1000);
+            toggleFlag = 1;
+        }
+        alert(`ENTER STUDENT DETAILS YOU WANT TO EDIT WITH RESPECT TO THE ROLL NO.`);
+        insertFlag = false;
+        editFlag = true;
 
-$(document).ready(()=>{
-    $(`#form1`).hide();
-    $(`#but2`).click(function(){
-        inn = false;
-	ed = true;
-	$(`#form1`).toggle(1000);    
+    });
+    $(`#but1`).click(function () {
+
+        document.getElementById(`form`).reset();
+
+        if (toggleFlag == 0) {
+            $(`#form`).toggle(1000);
+            toggleFlag = 1;
+        }
+        alert(`ENTER STUDENT DETAILS YOU WANT TO INSERT`);
+        editFlag = false;
+        insertFlag = true;
+
     });
 });
 
-let submitForm = ()=>{
-    $(`#form1`).hide();
-    let n = document.getElementById(`na`).value;
-    let r = document.getElementById(`rno`).value;
-    let s = document.getElementById(`str`).value;
-    let y = document.getElementById(`yr`).value;
-    let patt1 = /[a-z][A-Z]$/;
-    let patt2 = /[0-9]{4}$/;
-    let patt3 = /[0-9]{10}$/;
-    let tabb = $(`#tab`);
-    if(n == `` || r == `` || s == `` || y == ``)
-	alert(`ALL FIELDS ARE REQUIRED`);
-    else if(r.length != 10 || !patt3.test(r))
-	alert(`ROLL NO MUST BE OF 10 digits`);
-    
-    else if(!patt2.test(y))
-        alert(`YEAR MUST BE IN CORRECT FORMAT`); 
-    else
-    {
-        if(inn == true)
-	{
-		tabb.append(`<tr><td>${n}</td><td>${r}</td><td>${s}</td><td>${y}</td><td><input type = 'checkbox' name='cBox'></td></tr>`);
-	}
-	if(ed == true)
-	{
-		let ar = document.getElementsByTagName(`tr`);
-		for(let i in ar)
-		{
-			let rollno = ar[i].children[1].innerHTML;
-			if(rollno == document.getElementById(`rno`).value)
-			{
-				ar[i].children[0].innerHTML = document.getElementById(`na`).value;
-            			ar[i].children[3].innerHTML = document.getElementById(`yr`).value;
-            			ar[i].children[2].innerHTML = document.getElementById(`str`).value;
-            			break;
-			}
-		}
+
+let submitForm = () => {
+    let n = document.getElementById(`name`).value;
+    let r = document.getElementById(`rollNo`).value;
+    let s = document.getElementById(`stream`).value;
+    let y = document.getElementById(`year`).value;
+    let patternName = /^[a-zA-Z]*$/;
+    let patternYear = /[0-9]{4}$/;
+    let patternRollNo = /[0-9]{10}$/;
+    let table = $(`#table`);
+    if (n == `` || r == `` || s == `` || y == ``)
+        alert(`ALL FIELDS ARE REQUIRED`);
+    else if (r.length != 10 || !patternRollNo.test(r))
+        alert(`ROLL NO MUST BE OF 10 digits`);
+    else if (!patternName.test(n))
+        alert(`NAME MUST CONTAIN ALPHABETS ONLY`);
+    else if (!patternYear.test(y))
+        alert(`YEAR MUST BE IN CORRECT FORMAT`);
+    else {
+        $(`#form`).hide();
+        toggleFlag = 0;
+
+        if (insertFlag == true) {
+            table.append(`<tr>
+            <td>${n}</td>
+            <td>${r}</td>
+            <td>${s}</td>
+            <td>${y}</td>
+            <td><input type = 'checkbox' name='checkBox'></td>
+            </tr>`);
+            count++;
+            alert(`RECORD IS INSERTED`);
+            document.getElementById(`form`).reset();
+        }
+        if (editFlag == true) {
+            let flag = 0;
+            let array = document.getElementsByTagName(`tr`);
+            for (let i in array) {
+                let rollno = array[i].children[1].innerHTML;
+                if (rollno == document.getElementById(`rollNo`).value) {
+                    flag = 1;
+                    array[i].children[0].innerHTML = document.getElementById(`name`).value;
+                    array[i].children[3].innerHTML = document.getElementById(`year`).value;
+                    array[i].children[2].innerHTML = document.getElementById(`stream`).value;
+                    break;
+                }
+            }
+            if (flag == 0)
+                alert(`NO SUCH RECORD EXIST`);
+            else
+                alert(`RECORD WILL BE EDITTED`);
+            document.getElementById(`form`).reset();
         }
     }
-   
 }
 
-let del = ()=>{
-    let chk = $(`td input:checked`);
-    chk.closest(`tr`).remove();
-}
-let checkAll = (cb)=> {
-    let checkBoxes = document.getElementsByName(`cBox`);
-    if(cb.is(`:checked`)){
-        $("input[name='cBox']").prop("checked", true);
+
+let del = () => {
+    $(`#form`).hide();
+    document.getElementById(`form`).reset();
+    let check = $(`td input:checked`);
+    count = count - check.length;
+    console.log(count);
+    if (count < 0)
+        alert(`NO RECORD TO DELETE`);
+    else if (check.length == 0) {
+        alert(`SELECT THE RECORD TO DELETE`);
     }
-    else{
-        $("input[name='cBox']").prop("checked", false);
+    else {
+        check.closest(`tr`).remove();
+        alert(`RECORD WILL BE DELETED`);
     }
 }
 
-			
-	
- 
+
+let checkAll = (cb) => {
+    $(`#form`).hide();
+    document.getElementById(`form`).reset();
+    let checkBoxes = document.getElementsByName(`checkBox`);
+    if (cb.is(`:checked`)) {
+        $("input[name='checkBox']").prop("checked", true);
+    }
+    else {
+        $("input[name='checkBox']").prop("checked", false);
+    }
+}
